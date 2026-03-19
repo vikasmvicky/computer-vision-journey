@@ -23,7 +23,7 @@ while True:
 
     for (x, y, w, h) in faces:
         face = frame[y:y+h, x:x+w]
-        blurred = cv2.GaussianBlur(face, (99, 99), 30)
+        blurred = cv2.GaussianBlur(face, (51, 51), 30)
         frame[y:y+h, x:x+w] = blurred
 
     # Show frame OUTSIDE loop
