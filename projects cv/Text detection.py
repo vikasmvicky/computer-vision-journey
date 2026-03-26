@@ -1,17 +1,21 @@
+from fer import FER
 import cv2
-import pytesseract
+detector=FER()
+cap=cv2.VideoCapture(0,cv2.CAP_DSHOW)
 
-# Path to tesseract (Windows)
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+while True:
+    ret,frame=cap.read()
+    
+    result=detector.detect_emotions(frame)
 
-# Load image
-img = cv2.imread("data/text.jpeg")
+    for face in result:
+        x,y,w,h=face["box"]
+        emotion=max(face["emotions"],key=face["emotions"].get)
+        cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
+        cv2.putText(frame, emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        cv2.imshow("emotion detection",frame)
 
-# Convert to grayscale
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-# Extract text
-text = pytesseract.image_to_string(gray)
-
-print("Detected Text:")
-print(text)
+        if cv2.waitKey(0)==27:
+            break
+        cap.release()
+        cv2.destroyAllWindows()
